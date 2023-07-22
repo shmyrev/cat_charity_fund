@@ -1,1 +1,6 @@
-Generic single-database configuration with an async dbapi.
+## Полезные команды Alembic  
+alembic revision Создание файла миграции  
+alembic current — просмотр последней выполненной миграции  
+alembic history - позволяет увидеть в терминале все миграции  
+alembic downgrade base - отменить все миграции  
+alembic upgrade head - применить все миграции  

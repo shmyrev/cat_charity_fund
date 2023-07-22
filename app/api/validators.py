@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.charity_project import charity_project_crud
@@ -15,7 +15,7 @@ async def check_charity_project_exists(
     )
     if charity_project is None:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail='Проекта с указанным id не существует!'
         )
     return charity_project
@@ -31,7 +31,7 @@ async def check_charity_project_name_duplilcate(
     )
     if charity_project is not None:
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail='Проект с таким именем уже существует!'
         )
 
@@ -45,7 +45,7 @@ async def check_charity_project_before_delete(
     )
     if charity_project.invested_amount > 0:
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail=('В проект были внесены средства, не подлежит удалению!')
         )
     return charity_project
@@ -61,14 +61,14 @@ async def check_charity_project_before_update(
     )
     if charity_project.close_date is not None:
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail='Закрытый проект нельзя редактировать!'
         )
     full_amount_update_value = charity_project_in.full_amount
     if (full_amount_update_value and
        charity_project.invested_amount > full_amount_update_value):
         raise HTTPException(
-            status_code=422,
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail='Нельзя установить требуемую cумму меньше уже вложенной'
         )
     name_update_value = charity_project_in.name

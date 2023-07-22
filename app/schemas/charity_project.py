@@ -4,13 +4,21 @@ from typing import Optional
 from pydantic import BaseModel, Extra, Field, PositiveInt
 
 
-class CharityProjectCreateSchema(BaseModel):
-    name: str = Field(..., min_length=1, max_length=100)
-    description: str = Field(..., min_length=1)
+class CharityProjectBase(BaseModel):
+    name: str = Field(..., max_length=100)
+    description: str
     full_amount: PositiveInt
 
+    class Config:
+        min_anystr_length = 1
 
-class CharityProjectDBSchema(CharityProjectCreateSchema):
+
+class CharityProjectCreateSchema(CharityProjectBase):
+
+    pass
+
+
+class CharityProjectDBSchema(CharityProjectBase):
     id: int
     invested_amount: int
     fully_invested: bool
@@ -21,9 +29,9 @@ class CharityProjectDBSchema(CharityProjectCreateSchema):
         orm_mode = True
 
 
-class CharityProjectUpdateSchema(BaseModel):
-    name: Optional[str] = Field(min_length=1, max_length=100)
-    description: Optional[str] = Field(min_length=1)
+class CharityProjectUpdateSchema(CharityProjectBase):
+    name: Optional[str] = Field(max_length=100)
+    description: Optional[str]
     full_amount: Optional[PositiveInt]
 
     class Config:
